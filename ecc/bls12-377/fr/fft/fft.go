@@ -17,10 +17,11 @@
 package fft
 
 import (
-	"github.com/consensys/gnark-crypto/ecc"
-	"github.com/consensys/gnark-crypto/internal/parallel"
 	"math/big"
 	"math/bits"
+
+	"github.com/consensys/gnark-crypto/ecc"
+	"github.com/consensys/gnark-crypto/internal/parallel"
 
 	"github.com/consensys/gnark-crypto/ecc/bls12-377/fr"
 )
@@ -70,11 +71,17 @@ func (domain *Domain) FFT(a []fr.Element, decimation Decimation, opts ...Option)
 			}, opt.nbTasks)
 		} else {
 			if domain.withPrecompute {
-				parallel.Execute(len(a), func(start, end int) {
-					for i := start; i < end; i++ {
+				if opt.nbTasks == 1 {
+					for i := 0; i < len(a); i++ {
 						a[i].Mul(&a[i], &domain.cosetTable[i])
 					}
-				}, opt.nbTasks)
+				} else {
+					parallel.Execute(len(a), func(start, end int) {
+						for i := start; i < end; i++ {
+							a[i].Mul(&a[i], &domain.cosetTable[i])
+						}
+					}, opt.nbTasks)
+				}
 			} else {
 				c := domain.FrMultiplicativeGen
 				parallel.Execute(len(a), func(start, end int) {
