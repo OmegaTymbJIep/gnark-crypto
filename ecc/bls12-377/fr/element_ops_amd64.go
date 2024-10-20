@@ -29,7 +29,7 @@ func MulBy5(x *Element)
 func MulBy13(x *Element)
 
 //go:noescape
-func mul(res, x, y *Element)
+func Mul(res, x, y *Element)
 
 //go:noescape
 func fromMont(res *Element)
@@ -129,7 +129,7 @@ func (z *Element) Mul(x, y *Element) *Element {
 	// This optimization saves 5N + 2 additions in the algorithm, and can be used whenever the highest bit
 	// of the modulus is zero (and not all of the remaining bits are set).
 
-	mul(z, x, y)
+	Mul(z, x, y)
 	return z
 }
 
@@ -138,6 +138,6 @@ func (z *Element) Mul(x, y *Element) *Element {
 // x must be less than q
 func (z *Element) Square(x *Element) *Element {
 	// see Mul for doc.
-	mul(z, x, x)
+	Mul(z, x, x)
 	return z
 }

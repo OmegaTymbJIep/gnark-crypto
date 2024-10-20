@@ -43,7 +43,7 @@ GLOBL qInv0<>(SB), (RODATA+NOPTR), $8
 	CMOVQCS rb3, ra3;        \
 
 // mul(res, x, y *Element)
-TEXT ·mul(SB), $24-24
+TEXT ·Mul(SB), $24-24
 
 	// the algorithm is described in the Element.Mul declaration (.go)
 	// however, to benefit from the ADCX and ADOX carry chains
