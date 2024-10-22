@@ -29,7 +29,7 @@ func MulBy5(x *Element)
 func MulBy13(x *Element)
 
 //go:noescape
-func mul(res, x, y *Element)
+func Mul(res, x, y *Element)
 
 //go:noescape
 func fromMont(res *Element)
@@ -194,7 +194,7 @@ func (z *Element) Mul(x, y *Element) *Element {
 	// Algorithm 2 of "Faster Montgomery Multiplication and Multi-Scalar-Multiplication for SNARKS"
 	// by Y. El Housni and G. Botrel https://doi.org/10.46586/tches.v2023.i3.504-521
 
-	mul(z, x, y)
+	Mul(z, x, y)
 	return z
 }
 
@@ -203,6 +203,6 @@ func (z *Element) Mul(x, y *Element) *Element {
 // x must be less than q
 func (z *Element) Square(x *Element) *Element {
 	// see Mul for doc.
-	mul(z, x, x)
+	Mul(z, x, x)
 	return z
 }

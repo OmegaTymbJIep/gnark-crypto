@@ -277,7 +277,7 @@ func mulMod(pLagrangeCosetBitReversed, qLagrangeCosetBitReversed []fr.Element) [
 
 	res := make([]fr.Element, len(pLagrangeCosetBitReversed))
 	for i := 0; i < len(pLagrangeCosetBitReversed); i++ {
-		res[i].Mul(&pLagrangeCosetBitReversed[i], &qLagrangeCosetBitReversed[i])
+		fr.Mul(&res[i], &pLagrangeCosetBitReversed[i], &qLagrangeCosetBitReversed[i])
 	}
 
 	// NOT fft inv for now, wait until every part of the keys have been multiplied
@@ -291,7 +291,7 @@ func mulMod(pLagrangeCosetBitReversed, qLagrangeCosetBitReversed []fr.Element) [
 func mulModAcc(res []fr.Element, pLagrangeCosetBitReversed, qLagrangeCosetBitReversed []fr.Element) {
 	var t fr.Element
 	for i := 0; i < len(pLagrangeCosetBitReversed); i++ {
-		t.Mul(&pLagrangeCosetBitReversed[i], &qLagrangeCosetBitReversed[i])
+		fr.Mul(&t, &pLagrangeCosetBitReversed[i], &qLagrangeCosetBitReversed[i])
 		res[i].Add(&res[i], &t)
 	}
 }
