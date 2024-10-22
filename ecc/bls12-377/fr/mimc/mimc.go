@@ -141,7 +141,7 @@ func (d *digest) checksum() fr.Element {
 
 	for i := range d.data {
 		r := d.encrypt(d.data[i])
-		d.h.Add(&r, &d.h).Add(&d.h, &d.data[i])
+		d.h.Add(r, &d.h).Add(&d.h, &d.data[i])
 	}
 
 	return d.h
@@ -150,21 +150,24 @@ func (d *digest) checksum() fr.Element {
 // plain execution of a mimc run
 // m: message
 // k: encryption key
-func (d *digest) encrypt(m fr.Element) fr.Element {
+func (d *digest) encrypt(m fr.Element) *fr.Element {
 	once.Do(initConstants) // init constants
 
+	mPtr := &m
+
 	var tmp fr.Element
+	tmpPtr := &tmp
 	for i := 0; i < mimcNbRounds; i++ {
 		// m = (m+k+c)^**17
-		tmp.Add(&m, &d.h).Add(&tmp, &mimcConstants[i])
-		m.Square(&tmp).
-			Square(&m).
-			Square(&m).
-			Square(&m).
-			Mul(&m, &tmp)
+		tmp.Add(mPtr, &d.h).Add(tmpPtr, &mimcConstants[i])
+		fr.Mul(mPtr, tmpPtr, tmpPtr)
+		fr.Mul(mPtr, mPtr, mPtr)
+		fr.Mul(mPtr, mPtr, mPtr)
+		fr.Mul(mPtr, mPtr, mPtr)
+		fr.Mul(mPtr, mPtr, tmpPtr)
 	}
-	m.Add(&m, &d.h)
-	return m
+	mPtr.Add(mPtr, &d.h)
+	return mPtr
 }
 
 // Sum computes the mimc hash of msg from seed
